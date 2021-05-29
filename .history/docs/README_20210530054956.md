@@ -1,0 +1,31 @@
+# Google Sheet API Sample
+
+| Sheet   | Action | AuthType             |
+| ------- | ------ | -------------------- |
+| Private |        | OAuth                |
+| Public  | Read   | API Key &#124; OAuth |
+| Public  | Update | OAuth                |
+
+## Browser with OAuth (Javascript)
+
+[Client-side OAuth Sample without API Key](google-sheet-api-sample.html)
+
+### Reference
+
+- [OAuth 2.0 for Client-side Web Applications](https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow)
+
+- [JavaScript Quickstart](https://developers.google.com/sheets/api/quickstart/js)
+
+- [Scopes](https://developers.google.com/identity/protocols/oauth2/scopes#sheets)
+
+## Backend with OAuth and API Key
+
+### Reference
+
+- [Using OAuth 2.0 for Web Server Applications](https://developers.google.com/identity/protocols/oauth2/web-server)
+
+- [Using OAuth 2.0 for Server to Server Applications](https://developers.google.com/identity/protocols/oauth2/service-account)
+
+- [API](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values)
+
+- [Ranges](https://developers.google.com/sheets/api/samples/reading)
