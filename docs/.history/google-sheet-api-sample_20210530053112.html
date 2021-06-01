@@ -3,12 +3,6 @@
   <head>
     <title>Google Sheets API Quickstart</title>
     <meta charset="utf-8" />
-    <script src="https://cdn.jsdelivr.net/npm/handsontable@6.2.2/dist/handsontable.full.min.js"></script>
-    <link
-      href="https://cdn.jsdelivr.net/npm/handsontable@6.2.2/dist/handsontable.full.min.css"
-      rel="stylesheet"
-      media="screen"
-    />
   </head>
   <body>
     <p>Google Sheets API Quickstart</p>
@@ -17,33 +11,20 @@
     <button id="authorize_button" style="display: none">Authorize</button>
     <button id="signout_button" style="display: none">Sign Out</button>
     <br /><br />
-    <table>
-      <tr>
-        <td>
-          <button id="load_button" style="display: none">読み込み</button>
-        </td>
-        <td>
-          <button id="update_button" style="display: none">修正確定</button>
-        </td>
-        <td>
-          <button id="target_update_button" style="display: none">
-            特定部分の納品ボタン例
-          </button>
-        </td>
-      </tr>
-    </table>
-
-    <div id="grid"></div>
+    <button id="update1_button" style="display: none">Update ×</button>
+    <br />
+    <button id="update2_button" style="display: none">Update ◯</button>
+    <br />
 
     <pre id="content" style="white-space: pre-wrap"></pre>
 
     <script type="text/javascript">
       // Client ID and API key from the Developer Console
       var CLIENT_ID =
-        "557928102367-23q3heio5h2d2g4r4q864dq7kpsr79ac.apps.googleusercontent.com";
+        "557928102367-85ki1nqkt9r2t3m7epi60bk0g9jc2a41.apps.googleusercontent.com";
       var API_KEY = "";
       var TargetSheet = "1u4f2FlJhMWPT5Rz_zx8tf9hWl-P0YAUpJCrX8dWosSg";
-      var TargetRange = "Sheet1!A1:E10";
+      var TargetRange = "Sheet1!B3:C3";
 
       // Array of API discovery doc URLs for APIs used by the quickstart
       var DISCOVERY_DOCS = [
@@ -56,26 +37,8 @@
 
       var authorizeButton = document.getElementById("authorize_button");
       var signoutButton = document.getElementById("signout_button");
-      var loadButton = document.getElementById("load_button");
-      var updateButton = document.getElementById("update_button");
-      var targetUpdateButton = document.getElementById("target_update_button");
-
-      var Hot = {};
-
-      function setGridData(gridData) {
-        HoT.loadData(gridData);
-      }
-
-      function createHoT() {
-        var grid = document.getElementById("grid");
-        HoT = new Handsontable(grid, {
-          data: [],
-          rowHeaders: true,
-          colHeaders: true,
-          filters: true,
-          dropdownMenu: true,
-        });
-      }
+      var update1Button = document.getElementById("update1_button");
+      var update2Button = document.getElementById("update2_button");
 
       /**
        *  On load, called to load the auth2 library and API client library.
@@ -107,12 +70,11 @@
               updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
               authorizeButton.onclick = handleAuthClick;
               signoutButton.onclick = handleSignoutClick;
-              loadButton.onclick = listMajors;
-              updateButton.onclick = () => {
-                updateClick(TargetRange, HoT.getData());
+              update1Button.onclick = () => {
+                updateClick("×");
               };
-              targetUpdateButton.onclick = () => {
-                updateClick("Sheet1!E3", [["◯"]]);
+              update2Button.onclick = () => {
+                updateClick("◯");
               };
             },
             function (error) {
@@ -129,17 +91,14 @@
         if (isSignedIn) {
           authorizeButton.style.display = "none";
           signoutButton.style.display = "block";
-          loadButton.style.display = "block";
-          updateButton.style.display = "block";
-          targetUpdateButton.style.display = "block";
-          createHoT();
+          update1Button.style.display = "block";
+          update2Button.style.display = "block";
           listMajors();
         } else {
           authorizeButton.style.display = "block";
           signoutButton.style.display = "none";
-          loadButton.style.display = "none";
-          updateButton.style.display = "none";
-          targetUpdateButton.style.display = "none";
+          update1Button.style.display = "none";
+          update2Button.style.display = "none";
         }
       }
 
@@ -183,8 +142,13 @@
             function (response) {
               var range = response.result;
               if (range.values.length > 0) {
-                console.log(range.values);
-                setGridData(range.values);
+                appendPre("Name, Major:");
+                for (i = 0; i < range.values.length; i++) {
+                  var row = range.values[i];
+                  for (j = 0; j < row.length; j++) {
+                    appendPre(row[j] + ", ");
+                  }
+                }
               } else {
                 appendPre("No data found.");
               }
@@ -195,13 +159,13 @@
           );
       }
 
-      function updateClick(target, data) {
+      function updateClick(cellValue) {
         var params = {
           // The ID of the spreadsheet to update.
           spreadsheetId: TargetSheet, // TODO: Update placeholder value.
 
           // The A1 notation of the values to update.
-          range: target, // TODO: Update placeholder value.
+          range: TargetRange, // TODO: Update placeholder value.
 
           // How the input data should be interpreted.
           valueInputOption: "RAW", // TODO: Update placeholder value.
@@ -211,7 +175,7 @@
           // TODO: Add desired properties to the request body. All existing properties
           // will be replaced.
           majorDimension: "ROWS",
-          values: data,
+          values: [[cellValue, cellValue]],
         };
 
         var request = gapi.client.sheets.spreadsheets.values.update(
